@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>知乎专栏搜索</title>
+    <style>
+        body {
+            font-family: "Arial", sans-serif;
+            background: linear-gradient(135deg, #ffffff, #6dd5fa, #2980b9);
+            padding: 50px 0;
+            overflow-x: hidden;
+            background-attachment: fixed;
+            background-size: cover;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 30px;
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            border-top: 5px solid #5a67d8;
+            overflow: hidden;
+            transition: box-shadow 0.3s;
+        }
+
+        .container:hover {
+            box-shadow: 0 20px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .operation {
+            border-bottom: 2px solid rgba(226, 232, 240, 0.5);
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .operation:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 24px;
+            position: relative;
+        }
+
+        h3:after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            width: 70px;
+            background: linear-gradient(135deg, #5a67d8, #8e44ad);
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 10px;
+            /* 调整外边距 */
+            color: #4a5568;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            /* 调整外边距 */
+            border: 2px solid #cbd5e0;
+            border-radius: 10px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        input[type="text"]:focus {
+            border-color: #7f5a8f;
+            box-shadow: 0 0 8px rgba(142, 68, 173, 0.3);
+            outline: none;
+        }
+
+        button {
+            background: linear-gradient(135deg, #5a67d8, #8e44ad);
+            color: #fff;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        button:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -50%;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.15);
+            transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        button:hover:before {
+            left: 150%;
+        }
+
+        #message {
+            color: #e53e3e;
+            margin-bottom: 15px;
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #fed7d7;
+            border-radius: 8px;
+            border-left: 5px solid #e53e3e;
+            display: none;
+            transition: opacity 0.3s, transform 0.3s;
+            transform: translateY(20px);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="operation">
+            <h3>知乎专栏搜索</h3>
+            <label>请输入知乎专栏链接:</label>
+            <input type="text" id="zhiHuUrl" name="zhiHuUrl" />
+            <label>请输入文章的标题或者文章中包含的关键名:</label>
+            <input type="text" />
+            <button id="searchButton" onclick="searchButton()">
+                搜索文章
+            </button>
+        </div id="message">
+
+        <div class="operation">
+            <h3>使用教程</h3>
+        </div>
+    </div>
+    <script>
+        function searchButton() {
+            const zhiHuUrlnputElem = document.getElementById("zhiHuUrl");
+            let zhiHuUrlInput = zhiHuUrlnputElem.value.trim();
+
+
+            if (zhiHuUrlInput === "") {
+                alert("请输入专栏链接");
+                return;
+            }
+            //获取columns
+            // 使用正则表达式提取参数值
+            const columnIdRegex = /\/(c_\d+)$/;;
+            const matches = zhiHuUrlInput.match(columnIdRegex);
+
+            if (!matches || matches.length < 2) {
+                alert("请输入正确的专栏链接");
+                return;
+            }
+
+            const columnId = matches[1];
+
+            const limit = 100;
+            const offset = 0;
+
+            // 构建 API 请求 URL
+            const apiUrl = `/api/getTotals?columnId=${columnId}&limit=${limit}&offset=${offset}`;
+
+            // 发起 HTTP GET 请求
+            fetch("http://localhost:3000" +apiUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // 在这里处理获取到的数据
+                    console.log(data);
+                })
+                .catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+                });
+
+        }
+    </script>
+</body>
+
+</html>
