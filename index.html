@@ -126,6 +126,29 @@
             transition: opacity 0.3s, transform 0.3s;
             transform: translateY(20px);
         }
+
+        /* 加载动画样式 */
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #7f5a8f;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 2s linear infinite;
+            margin: 0 auto;
+            display: none;
+            /* 初始状态隐藏 */
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
     </style>
 </head>
 
@@ -140,6 +163,10 @@
             <button id="searchButton" onclick="searchButton()">
                 搜索文章
             </button>
+            <!-- 加载动画 -->
+            <div class="loader" id="loader"></div>
+            <!--搜索结果-->
+            <div id="jsonContainer"></div>
         </div id="message">
 
         <div class="operation">
@@ -174,8 +201,11 @@
             // 构建 API 请求 URL
             const apiUrl = `/api/getTotals?columnId=${columnId}&limit=${limit}&offset=${offset}`;
 
+            // 显示加载动画
+            document.getElementById("loader").style.display = "block";
+
             // 发起 HTTP GET 请求
-            fetch("http://localhost:3000" +apiUrl)
+            fetch("http://localhost:3000" + apiUrl)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
@@ -183,8 +213,29 @@
                     return response.json();
                 })
                 .then(data => {
+                    // 隐藏加载动画
+                    document.getElementById("loader").style.display = "none";
                     // 在这里处理获取到的数据
                     console.log(data);
+
+                    // 清空原有的内容
+                    document.getElementById("jsonContainer").innerHTML = "";
+                    // 获取 data 对象中的内容
+                    const articles = data.data;
+
+                    // 遍历数据，将每个对象的属性显示在页面下方
+                    Object.values(articles).forEach(article => {
+                        const articleDiv = document.createElement("div");
+                        articleDiv.innerHTML = `
+                        <h3>${article.title}</h3>
+                        <p>${article.excerpt}</p>
+                        <img src="${article.title_image}" alt="${article.title}">
+                        <p>Created: ${article.created}</p>
+                        <a href="${article.url}" target="_blank">跳转到知乎原文</a>
+                    `;
+                        document.getElementById("jsonContainer").appendChild(articleDiv);
+                    });
+
                 })
                 .catch(error => {
                     console.error('There was a problem with the fetch operation:', error);

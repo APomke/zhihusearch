@@ -6,6 +6,21 @@ const app = express();
 app.use(cors());
 
 const chunks = [];
+// 创建一个空的 JSON 对象
+const NewJsondata = {
+    "data": []
+};
+
+function generateArticle(title, excerpt, title_image, url, content, created) {
+    return {
+        "title": title,
+        "excerpt": excerpt,
+        "title_image": title_image,
+        "url": url,
+        "content": content,
+        "created": created
+    };
+}
 
 // 递归函数来获取专栏文章
 function getArticles(columnId, limit, offset, callback) {
@@ -60,10 +75,24 @@ app.get('/api/getTotals', (req, res) => {
         if (error) {
             res.status(500).send('Internal Server Error');
         } else {
-            console.log("数组里有：" + chunks.length);
-            console.log(chunks[11])
-            //数据格式化只返回文章标题，图片，链接，介绍
-            res.send(chunks);
+            // 检查是否已经发送了响应
+            if (!res.headersSent) {
+                // 数据格式化只返回文章标题，图片，链接，介绍
+                for(var i = 0; i < chunks.length; i++){
+                    jsonData = JSON.parse(chunks[i]);
+                    for(var j = 0; j < jsonData.data.length; j++){
+                        var title = jsonData.data[j].title;
+                        var excerpt = jsonData.data[j].excerpt;
+                        var title_image = jsonData.data[j].title_image;
+                        var url = jsonData.data[j].url;
+                        var content = jsonData.data[j].content;
+                        var created = jsonData.data[j].created;
+                        const obj = generateArticle(title,excerpt,title_image,url,content,created);
+                        NewJsondata.data.push(obj);
+                    }
+                }
+                res.send(NewJsondata);
+            }
         }
     });
 });
