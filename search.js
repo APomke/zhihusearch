@@ -1,4 +1,6 @@
 const express = require('express');
+// 导入 path 模块
+const path = require('path');
 const https = require('https');
 const cors = require('cors');
 const app = express();
@@ -66,6 +68,11 @@ function getArticles(columnId, limit, offset, chunks, callback) {
 
     request.end();
 }
+
+// 先主动跳转到 index.html 页面
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
 
 // 获取专栏文章总数
 app.get('/api/getTotals', (req, res) => {

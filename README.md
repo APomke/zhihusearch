@@ -9,5 +9,30 @@ ndoejs
 
 # 构建
 
+```
+npm install
+```
+
+
+
 # 运行
 
+```
+node search.js
+```
+
+
+
+# 访问
+
+项目默认运行在3000端口
+
+在浏览器访问
+
+```
+http://localhost:3000/
+```
+
+即可
+
+![image-20240509214938443](https://awsimage-1.oss-cn-hangzhou.aliyuncs.com/image-20240509214938443.png)
