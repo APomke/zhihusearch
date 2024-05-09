@@ -149,6 +149,18 @@
                 transform: rotate(360deg);
             }
         }
+
+        .article a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+
+        .article a:hover {
+            color: #0056b3;
+            text-decoration: underline;
+        }
     </style>
 </head>
 
@@ -226,11 +238,11 @@
                     // 遍历数据，将每个对象的属性显示在页面下方
                     Object.values(articles).forEach(article => {
                         const articleDiv = document.createElement("div");
+                        articleDiv.classList.add("article"); // 添加 article 类名
                         articleDiv.innerHTML = `
                         <h3>${article.title}</h3>
                         <img src="${article.title_image}" alt="${article.title}">
                         <p>${article.excerpt}</p>
-                        <p>Created: ${article.created}</p>
                         <a href="${article.url}" target="_blank">跳转到知乎原文</a>
                     `;
                         document.getElementById("jsonContainer").appendChild(articleDiv);
