@@ -171,7 +171,7 @@
             <label>请输入知乎专栏链接:</label>
             <input type="text" id="zhiHuUrl" name="zhiHuUrl" />
             <label>请输入文章的标题或者文章中包含的关键名:</label>
-            <input type="text" />
+            <input type="text" id="keyword" name="keyword" />
             <button id="searchButton" onclick="searchButton()">
                 搜索文章
             </button>
@@ -188,7 +188,9 @@
     <script>
         function searchButton() {
             const zhiHuUrlnputElem = document.getElementById("zhiHuUrl");
+            const keywordnputElem = document.getElementById("keyword");
             let zhiHuUrlInput = zhiHuUrlnputElem.value.trim();
+            let keywordInput = keywordnputElem.value.trim();
 
 
             if (zhiHuUrlInput === "") {
@@ -234,6 +236,24 @@
                     document.getElementById("jsonContainer").innerHTML = "";
                     // 获取 data 对象中的内容
                     const articles = data.data;
+
+                    // 判断用户是否输入了关键名
+                    if (keywordInput !== "") {
+                        console.log("获取到关键字：" + keywordInput);
+
+                        // 遍历数据，查找并显示包含关键字的文章
+                        Object.keys(articles).forEach(articleId => {
+                            const article = articles[articleId];
+                            if (!(article.title.includes(keywordInput) || article.content.includes(keywordInput))) {
+                                console.log("文章不包含关键字：" + keywordInput);
+                                // 如果文章不包含关键字，则从对象中删除
+                                delete articles[articleId];
+                            }
+                        });
+                    }
+                    // 清空 jsonContainer
+                    const jsonContainer = document.getElementById("jsonContainer");
+                    jsonContainer.innerHTML = "";
 
                     // 遍历数据，将每个对象的属性显示在页面下方
                     Object.values(articles).forEach(article => {
